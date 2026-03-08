@@ -2,17 +2,23 @@
 <html>
 <head>
     <title>Multiplayer Sandbox</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
-        body { margin: 0; overflow: hidden; background: #000; }
-        #ui { position: fixed; top: 10px; left: 10px; color: white; font-family: sans-serif; pointer-events: none; }
+        body { margin: 0; overflow: hidden; background: #000; touch-action: none; }
+        #ui { position: fixed; top: 10px; left: 10px; color: white; font-family: sans-serif; pointer-events: none; z-index: 10; }
+        #joystick-zone { position: fixed; bottom: 50px; left: 50px; width: 150px; height: 150px; z-index: 20; }
     </style>
 </head>
 <body>
-    <div id="ui">Use WASD to move</div>
+    <div id="ui">WASD or Joystick to move</div>
+    <div id="joystick-zone"></div>
+    
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net"></script>
     <script type="importmap">
-        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+        { "imports": { "three": "https://unpkg.com" } }
     </script>
     <script type="module" src="game.js"></script>
 </body>
 </html>
+
