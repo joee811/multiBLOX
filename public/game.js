@@ -55,6 +55,60 @@ function update() {
         camera.lookAt(p.position);
 
         socket.emit('move', { x: p.position.x, y: p.position.y, z: p.position.z });
+        import * as THREE from 'three';
+
+// ... (Keep existing Scene, Camera, Renderer, and Socket setup) ...
+
+// Joystick Initialization
+let joystickInput = { x: 0, y: 0 };
+const joystick = nipplejs.create({
+    zone: document.getElementById('joystick-zone'),
+    mode: 'static',
+    position: { left: '75px', bottom: '75px' },
+    color: 'white'
+});
+
+joystick.on('move', (evt, data) => {
+    // Convert joystick vector to movement
+    joystickInput.x = data.vector.x;
+    joystickInput.y = data.vector.y;
+});
+
+joystick.on('end', () => {
+    joystickInput = { x: 0, y: 0 };
+});
+
+function update() {
+    if (myId && players[myId]) {
+        const p = players[myId];
+        const speed = 0.15;
+
+        // Combine Keyboard + Joystick
+        let moveX = 0;
+        let moveZ = 0;
+
+        if (keys['KeyW']) moveZ -= speed;
+        if (keys['KeyS']) moveZ += speed;
+        if (keys['KeyA']) moveX -= speed;
+        if (keys['KeyD']) moveX += speed;
+
+        // Joystick adds to movement
+        moveX += joystickInput.x * speed;
+        moveZ -= joystickInput.y * speed; // Y in 2D is Z in 3D
+
+        p.position.x += moveX;
+        p.position.z += moveZ;
+
+        camera.position.set(p.position.x, p.position.y + 5, p.position.z + 10);
+        camera.lookAt(p.position);
+
+        socket.emit('move', { x: p.position.x, y: p.position.y, z: p.position.z });
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(update);
+}
+update();
+
     }
     renderer.render(scene, camera);
     requestAnimationFrame(update);
